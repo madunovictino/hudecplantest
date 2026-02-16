@@ -4,6 +4,43 @@
 ======================================== */
 
 // ========================================
+// SERVICE METADATA & PROJECT DATA
+// ========================================
+
+const SERVICE_META = {
+    'projektiranje': {
+        title: 'Projektiranje',
+        description: 'Izrada projektne dokumentacije svih stupnjeva, za izdavanje lokacijske i građevinske dozvole.',
+        details: 'Program istražnih radova, Idejni projekt, Elaborat zaštite na radu, Elaborat zaštite od požara, Glavni projekt, Izvedbeni projekt, Natječajna dokumentacija, Aplikacije za projekte financirane od strane EU fondova.',
+        audience: 'Investitori, developeri, jedinice lokalne i regionalne samouprave',
+    },
+    'zastita-prirode': {
+        title: 'Zaštita prirode i okoliša',
+        description: 'Izrada dokumentacije iz područja zaštite prirode i okoliša.',
+        details: 'Elaborat zaštite okoliša, Elaborat zaštite okoliša za ocjenu o potrebi procjene utjecaja zahvata na okoliš, Sanacijski program klizišta, Plan gospodarenja otpadom, Elaborat gospodarenja otpadom, Studija izvodljivosti, Studija utjecaja na okoliš.',
+        audience: 'Komunalna poduzeća, općine, gradovi, županije, privatni investitori',
+    },
+    'vodjenje-projekata': {
+        title: 'Vođenje i praćenje projekata',
+        description: 'Vođenje projekata za potrebe investitora, koordiniranje rada projektanata, izvođača i nadzora — od ideje do puštanja u pogon objekta.',
+        details: 'Projektantski nadzor, koordinacija dionika projekta, praćenje izvođenja radova prema FIDIC uvjetima.',
+        audience: 'Investitori, fondovi, javne ustanove',
+    },
+    'savjetovanje': {
+        title: 'Savjetovanje',
+        description: 'Savjetovanje komunalnih poduzeća i organa lokalne samouprave.',
+        details: 'Postupanje s otpadom, Izrada projektnih zadataka, Studija gospodarenja otpadom.',
+        audience: 'Komunalna poduzeća, općine, gradovi, županije',
+    },
+    'eu-fondovi': {
+        title: 'Izrada dokumentacije za EU fondove',
+        description: 'Izrada projektne dokumentacije i natječajne dokumentacije po PRAG-u i FIDIC-u te prema Zakonu o javnoj nabavi.',
+        details: 'Priprema projektnih prijedloga, tender dokumentacija, natječajna dokumentacija za EU financirane projekte.',
+        audience: 'Jedinice lokalne i regionalne samouprave, javna poduzeća',
+    },
+};
+
+// ========================================
 // NAVIGATION - Sticky navbar & mobile menu
 // ========================================
 
@@ -86,143 +123,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// ========================================
-// PROJECT FILTERING - Filter projects by category
-// ========================================
-
-const filterButtons = document.querySelectorAll('.filter-btn');
-const projectCards = document.querySelectorAll('.project-card');
-
-filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        // Remove active class from all buttons
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        
-        // Add active class to clicked button
-        button.classList.add('active');
-        
-        // Get filter value
-        const filterValue = button.getAttribute('data-filter');
-        
-        // Filter projects
-        projectCards.forEach(card => {
-            if (filterValue === 'all') {
-                card.classList.remove('hidden');
-                // Fade in animation
-                card.style.animation = 'fadeIn 0.5s ease-out';
-            } else {
-                const cardCategory = card.getAttribute('data-category');
-                
-                if (cardCategory === filterValue) {
-                    card.classList.remove('hidden');
-                    card.style.animation = 'fadeIn 0.5s ease-out';
-                } else {
-                    card.classList.add('hidden');
-                }
-            }
-        });
-    });
-});
-
-// ========================================
-// CONTACT FORM - Form validation and submission
-// ========================================
-
-const contactForm = document.getElementById('contactForm');
-const formMessage = document.getElementById('formMessage');
-
-contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    // Get form values
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const subject = document.getElementById('subject').value.trim();
-    const message = document.getElementById('message').value.trim();
-    
-    // Basic validation
-    if (!name || !email || !subject || !message) {
-        showFormMessage('Molimo popunite sva obavezna polja.', 'error');
-        return;
-    }
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showFormMessage('Molimo unesite valjanu email adresu.', 'error');
-        return;
-    }
-    
-    // Simulate form submission (replace with actual backend integration)
-    simulateFormSubmission(name, email, phone, subject, message);
-});
-
-// Function to show form messages
-function showFormMessage(message, type) {
-    formMessage.textContent = message;
-    formMessage.className = `form-message ${type}`;
-    
-    // Auto-hide message after 5 seconds
-    setTimeout(() => {
-        formMessage.className = 'form-message';
-    }, 5000);
-}
-
-// Simulate form submission (replace with actual API call)
-function simulateFormSubmission(name, email, phone, subject, message) {
-    // Show loading state
-    const submitButton = contactForm.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton.textContent;
-    submitButton.textContent = 'Šaljem...';
-    submitButton.disabled = true;
-    
-    // Simulate API call delay
-    setTimeout(() => {
-        // Success response
-        showFormMessage('Hvala! Vaša poruka je uspješno poslana. Kontaktirat ćemo Vas uskoro.', 'success');
-        
-        // Reset form
-        contactForm.reset();
-        
-        // Reset button
-        submitButton.textContent = originalButtonText;
-        submitButton.disabled = false;
-        
-        // Log form data (for development - remove in production)
-        console.log('Form submitted:', { name, email, phone, subject, message });
-        
-        // In production, replace the setTimeout with actual fetch/axios call:
-        /*
-        fetch('/api/contact', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name, email, phone, subject, message }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            showFormMessage('Hvala! Vaša poruka je uspješno poslana.', 'success');
-            contactForm.reset();
-        })
-        .catch(error => {
-            showFormMessage('Došlo je do greške. Molimo pokušajte ponovo.', 'error');
-        })
-        .finally(() => {
-            submitButton.textContent = originalButtonText;
-            submitButton.disabled = false;
-        });
-        */
-    }, 1500);
-}
+// (Contact form removed per user request)
 
 // ========================================
 // INTERSECTION OBSERVER - Fade in elements on scroll
 // ========================================
 
 const observerOptions = {
-    threshold: 0.1,
+    threshold: 0.15,
     rootMargin: '0px 0px -50px 0px'
 };
 
@@ -230,14 +138,15 @@ const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.classList.add('fade-in');
-            observer.unobserve(entry.target);
+        } else {
+            entry.target.classList.remove('fade-in');
         }
     });
 }, observerOptions);
 
-// Observe elements for fade-in animation
+// Observe elements for fade-in/out animation
 const animatedElements = document.querySelectorAll(
-    '.content-card, .service-card, .project-card, .process-step, .benefit-card'
+    '.content-card, .service-card, .contact-item'
 );
 
 animatedElements.forEach(element => {
@@ -295,41 +204,154 @@ const debouncedHighlightNav = debounce(highlightNavigation, 100);
 window.addEventListener('scroll', debouncedHighlightNav);
 
 // ========================================
+// SERVICE MODAL - Open, close, populate
+// ========================================
+
+const modalOverlay = document.getElementById('serviceModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalSubtitle = document.getElementById('modalSubtitle');
+const modalBody = document.getElementById('modalBody');
+const modalClose = document.getElementById('modalClose');
+let lastFocusedElement = null;
+
+function openModal(serviceId) {
+    const meta = SERVICE_META[serviceId];
+    const data = typeof SERVICE_DATA !== 'undefined' ? SERVICE_DATA[serviceId] : null;
+
+    if (!meta) return;
+
+    lastFocusedElement = document.activeElement;
+
+    modalTitle.textContent = meta.title;
+    modalSubtitle.textContent = meta.description;
+
+    modalBody.innerHTML = '';
+
+    if (data && data.projects && data.projects.length > 0) {
+        data.projects.forEach(project => {
+            const div = document.createElement('div');
+            div.className = 'modal-project';
+            div.innerHTML = `
+                <div class="modal-project-name">${escapeHtml(project.name)}</div>
+                <div class="modal-project-meta">
+                    <span><strong>Investitor:</strong> ${escapeHtml(project.investor)}</span>
+                    <span><strong>Godina:</strong> ${project.year}</span>
+                </div>
+            `;
+            modalBody.appendChild(div);
+        });
+    } else {
+        modalBody.innerHTML = '<p style="color: var(--color-text-muted);">Referentni projekti će biti dodani uskoro.</p>';
+    }
+
+    modalOverlay.removeAttribute('hidden');
+    requestAnimationFrame(() => {
+        modalOverlay.classList.add('is-active');
+    });
+    document.body.classList.add('modal-open');
+
+    modalClose.focus();
+}
+
+function closeModal() {
+    modalOverlay.classList.remove('is-active');
+    document.body.classList.remove('modal-open');
+
+    modalOverlay.addEventListener('transitionend', function handler() {
+        modalOverlay.setAttribute('hidden', '');
+        modalOverlay.removeEventListener('transitionend', handler);
+    });
+
+    if (lastFocusedElement) {
+        lastFocusedElement.focus();
+        lastFocusedElement = null;
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Service card click handlers
+document.querySelectorAll('.service-card[data-service-id]').forEach(card => {
+    card.addEventListener('click', () => {
+        openModal(card.getAttribute('data-service-id'));
+    });
+    card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openModal(card.getAttribute('data-service-id'));
+        }
+    });
+});
+
+// Close modal: X button
+modalClose.addEventListener('click', closeModal);
+
+// Close modal: backdrop click
+modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) {
+        closeModal();
+    }
+});
+
+// ========================================
+// MODAL ACCESSIBILITY - Focus trap, ESC
+// ========================================
+
+modalOverlay.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeModal();
+        return;
+    }
+
+    if (e.key === 'Tab') {
+        const focusable = modalOverlay.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }
+});
+
+
+// ========================================
+// MARQUEE - Duplicate items for infinite scroll
+// ========================================
+
+(function setupMarquee() {
+    const track = document.querySelector('.marquee-track');
+    if (!track) return;
+    const items = track.innerHTML;
+    track.innerHTML = items + items;
+})();
+
+// ========================================
 // INITIALIZE - Run on page load
 // ========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('HUDEC PLAN website loaded successfully');
-    
-    // Set initial active nav link
     highlightNavigation();
-    
-    // Add loaded class to body for CSS animations
     document.body.classList.add('loaded');
 });
 
-// ========================================
-// UTILITY FUNCTIONS
-// ========================================
-
-// Check if element is in viewport
-function isInViewport(element) {
-    const rect = element.getBoundingClientRect();
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-}
-
-// Get current year for footer (if needed)
-function updateFooterYear() {
+// Get current year for footer
+(function updateFooterYear() {
     const yearElement = document.querySelector('.footer-bottom p');
     if (yearElement) {
         const currentYear = new Date().getFullYear();
         yearElement.textContent = yearElement.textContent.replace('2024', currentYear);
     }
-}
-
-updateFooterYear();
+})();
